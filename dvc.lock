@@ -1,0 +1,142 @@
+schema: '2.0'
+stages:
+  import_data:
+    cmd: python3 src/data/import_data.py
+    deps:
+    - path: src/data/import_data.py
+      hash: md5
+      md5: c5c94271725f9ca7e8117a38f9b4e483
+      size: 1697
+    outs:
+    - path: data/raw_data/raw.csv
+      hash: md5
+      md5: 617b56af2992376d5c3e91ad80823898
+      size: 333757
+  split_data:
+    cmd: python3 src/data/split_data.py
+    deps:
+    - path: data/raw_data/raw.csv
+      hash: md5
+      md5: 617b56af2992376d5c3e91ad80823898
+      size: 333757
+    - path: src/data/split_data.py
+      hash: md5
+      md5: fc291969bfdeff4fcf4d1d899be751e6
+      size: 674
+    outs:
+    - path: data/processed_data/X_test.csv
+      hash: md5
+      md5: b6c2910e3b3fc562c5b516b63fc3e22c
+      size: 59909
+    - path: data/processed_data/X_train.csv
+      hash: md5
+      md5: ef01f67c035349e375300528a99938f5
+      size: 238533
+    - path: data/processed_data/y_test.csv
+      hash: md5
+      md5: a051d29629c8bbb4cfb7e85c7f0315da
+      size: 6456
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+  normalize_data:
+    cmd: python3 src/data/normalize_data.py
+    deps:
+    - path: data/processed_data/X_test.csv
+      hash: md5
+      md5: b6c2910e3b3fc562c5b516b63fc3e22c
+      size: 59909
+    - path: data/processed_data/X_train.csv
+      hash: md5
+      md5: ef01f67c035349e375300528a99938f5
+      size: 238533
+    - path: src/data/normalize_data.py
+      hash: md5
+      md5: 135d8c0feb87810ae0eb654938a5968d
+      size: 2167
+    outs:
+    - path: data/processed_data/X_test_scaled.csv
+      hash: md5
+      md5: 5e079189af6bd091d651a89fafb1c290
+      size: 57026
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+    - path: models/data/scaler.pkl
+      hash: md5
+      md5: a2ce68a17e87953c97beb075135435f8
+      size: 1255
+  gridsearch:
+    cmd: python3 src/models/gridsearch.py
+    deps:
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+    - path: src/models/gridsearch.py
+      hash: md5
+      md5: c457d674c8831f572fcad042cba871a2
+      size: 724
+    outs:
+    - path: models/data/best_params.pkl
+      hash: md5
+      md5: a3dfde2636597eb4b31ced57fe220cfb
+      size: 47
+  train_model:
+    cmd: python3 src/models/train_model.py
+    deps:
+    - path: data/processed_data/X_train_scaled.csv
+      hash: md5
+      md5: c1b80eb7f083888b625dd0369cf381f8
+      size: 227497
+    - path: data/processed_data/y_train.csv
+      hash: md5
+      md5: a9cd9d91da89f732843d72548f64ded3
+      size: 25951
+    - path: models/data/best_params.pkl
+      hash: md5
+      md5: a3dfde2636597eb4b31ced57fe220cfb
+      size: 47
+    - path: src/models/train_model.py
+      hash: md5
+      md5: 278ad80894ff15d410d58153e19efc15
+      size: 526
+    outs:
+    - path: models/models/model.pkl
+      hash: md5
+      md5: eb9cbb969989078672c280417dd6de47
+      size: 7767265
+  evaluate_model:
+    cmd: python3 src/models/evaluate_model.py
+    deps:
+    - path: data/processed_data/X_test_scaled.csv
+      hash: md5
+      md5: 5e079189af6bd091d651a89fafb1c290
+      size: 57026
+    - path: data/processed_data/y_test.csv
+      hash: md5
+      md5: a051d29629c8bbb4cfb7e85c7f0315da
+      size: 6456
+    - path: models/models/model.pkl
+      hash: md5
+      md5: eb9cbb969989078672c280417dd6de47
+      size: 7767265
+    - path: src/models/evaluate_model.py
+      hash: md5
+      md5: fff6164a4fd7bc7b9651aaa60f8f7831
+      size: 782
+    outs:
+    - path: data/processed_data/predictions.csv
+      hash: md5
+      md5: 0d95a1dc43726ebcf04ff8a1246ddfe9
+      size: 13213
+    - path: metrics/scores.json
+      hash: md5
+      md5: 0ef4ee12b850a5d60faedac81aed34dd
+      size: 54

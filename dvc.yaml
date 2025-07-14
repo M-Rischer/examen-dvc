@@ -51,4 +51,5 @@ stages:
     - src/models/evaluate_model.py
     outs:
     - data/processed_data/predictions.csv
+    metrics:
     - metrics/scores.json
