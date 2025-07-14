@@ -12,7 +12,7 @@ def main():
     predictions = model.predict(X_test)
 
     os.makedirs("data", exist_ok=True)
-    pd.DataFrame({"y_true": y_test.values.ravel(), "y_pred": predictions}).to_csv("data/predictions.csv", index=False)
+    pd.DataFrame({"y_true": y_test.values.ravel(), "y_pred": predictions}).to_csv("data/processed_data/predictions.csv", index=False)
 
     mse = mean_squared_error(y_test, predictions)
     r2 = r2_score(y_test, predictions)
